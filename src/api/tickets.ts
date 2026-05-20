@@ -1,3 +1,4 @@
+// src/api/tickets.ts
 import { http } from "./http";
 
 export type TicketStatus = "ABIERTO" | "EN_PROCESO" | "PENDIENTE" | "RESUELTO" | "CERRADO";
@@ -14,7 +15,14 @@ export type TicketResponse = {
   createdAt: string;
 };
 
-// Tipo genérico para la respuesta de tu backend
+// Esta interfaz debe ser exportada para usarla en el formulario
+export type TicketRequest = {
+  titulo: string;
+  descripcion: string;
+  prioridad: string;
+  categoriaId: number;
+};
+
 export type ApiResponse<T> = {
   success: boolean;
   message: string;
@@ -22,9 +30,15 @@ export type ApiResponse<T> = {
 };
 
 export const ticketsApi = {
-  // Extraemos directamente .data de la respuesta genérica del backend
   findAll: async () => {
     const res = await http<ApiResponse<TicketResponse[]>>("/api/tickets");
     return res.data;
   },
+  create: async (dto: TicketRequest) => {
+    const res = await http<ApiResponse<TicketResponse>>("/api/tickets", {
+        method: "POST",
+        body: JSON.stringify(dto)
+    });
+    return res.data;
+  }
 };

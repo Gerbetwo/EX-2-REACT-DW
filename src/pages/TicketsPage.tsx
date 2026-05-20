@@ -1,21 +1,25 @@
 import { useState } from "react";
 import { useTickets } from "../api/tickets.queries";
+import CreateTicketPage from "./CreateTicketPage";
 
 export default function TicketsPage() {
   const { data: tickets = [], isLoading, isError, error } = useTickets();
   const [filterStatus, setFilterStatus] = useState<string>("");
-
+// Dentro de TicketsPage.tsx, añade esto:
+  const [isCreating, setIsCreating] = useState(false);
   // Filtro derivado: se calcula en cada render (Buena práctica en React)
   const filteredTickets = filterStatus
     ? tickets.filter((t) => t.status === filterStatus)
     : tickets;
-
+  if (isCreating) return <CreateTicketPage onCancel={() => setIsCreating(false)} />;
   return (
     <div className="p-10">
       <h2 className="text-4xl font-black uppercase border-b-4 border-black pb-4 mb-6 tracking-tight">
         Tickets
       </h2>
-
+        <button onClick={() => setIsCreating(true)} className="bg-black text-white px-6 py-2 font-black uppercase mb-4">
+        + Nuevo Ticket
+        </button>
       {/* Barra de Controles / Filtros */}
       <div className="mb-8 flex gap-4">
         <div className="flex flex-col">
